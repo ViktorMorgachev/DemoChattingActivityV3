@@ -16,15 +16,18 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import viktor.demo.ru.demochattingactivity.R;
+import viktor.demo.ru.demochattingactivity.interfaces.OwnerListener;
 
 /**
  * Created by Developer on 12.04.2018.
  */
 
-public class OwnerActivity extends AppCompatActivity {
+public class OwnerActivity extends AppCompatActivity implements OwnerListener {
+
     private TabHost.TabSpec tabSpec;
     private TextView textViewDescriprion;
     private ImageView imageView;
+    private TabHost tabHost;
     public static final String TAG_LISTENER = "tag";
 
 
@@ -33,7 +36,7 @@ public class OwnerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.owner_layout_container);
 
-        TabHost tabHost = findViewById(R.id.owner_tab_host);
+        tabHost = findViewById(R.id.owner_tab_host);
         tabHost.setup();
 
         tabSpec = tabHost.newTabSpec("anastasia_tag");
@@ -42,7 +45,7 @@ public class OwnerActivity extends AppCompatActivity {
         tabHost.addTab(tabSpec);
 
         tabSpec = tabHost.newTabSpec("marina_tag");
-        tabSpec.setIndicator("Камила");
+        tabSpec.setIndicator("Марина");
         tabSpec.setContent(tabContentFactory);
         tabHost.addTab(tabSpec);
 
@@ -51,8 +54,8 @@ public class OwnerActivity extends AppCompatActivity {
         tabSpec.setContent(tabContentFactory);
         tabHost.addTab(tabSpec);
 
-        // Временное решение
-        setCurrentTab(getIntent().getStringExtra(TAG_LISTENER), tabHost);
+        setTabContent(getIntent().getStringExtra(TAG_LISTENER));
+
 
     }
 
@@ -130,18 +133,36 @@ public class OwnerActivity extends AppCompatActivity {
         }
     };
 
-    private void setCurrentTab(String currentTab, TabHost tabHost) {
-        switch (currentTab){
-            case "Cat_tag":{
-                tabHost.setCurrentTabByTag("anastasia_tag");
-            } break;
-            case "Dog_tag":{
-                tabHost.setCurrentTabByTag("viktor_tag");
-            } break;
-            case "Bird_tag":{
-                tabHost.setCurrentTabByTag("marina_tag");
-            } break;
-        }
 
+    @Override
+    public void showCatOwner() {
+        tabHost.setCurrentTabByTag("anastasia_tag");
+    }
+
+    @Override
+    public void showDogOwner() {
+        tabHost.setCurrentTabByTag("viktor_tag");
+    }
+
+    @Override
+    public void showBirdOwner() {
+        tabHost.setCurrentTabByTag("marina_tag");
+    }
+
+    public void setTabContent(String tabContent) {
+        switch (tabContent) {
+            case "Cat_tag": {
+                showCatOwner();
+                break;
+            }
+            case "Dog_tag": {
+                showDogOwner();
+                break;
+            }
+            case "Bird_tag": {
+                showBirdOwner();
+                break;
+            }
+        }
     }
 }

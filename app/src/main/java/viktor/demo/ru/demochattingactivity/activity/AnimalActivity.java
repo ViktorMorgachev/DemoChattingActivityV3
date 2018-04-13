@@ -25,16 +25,18 @@ import viktor.demo.ru.demochattingactivity.R;
 import viktor.demo.ru.demochattingactivity.fragments.FragmentBird;
 import viktor.demo.ru.demochattingactivity.fragments.FragmentCat;
 import viktor.demo.ru.demochattingactivity.fragments.FragmentDog;
+import viktor.demo.ru.demochattingactivity.interfaces.AnimalListener;
 
 /**
  * Created by Developer on 12.04.2018.
  */
 
-public class AnimalActivity extends AppCompatActivity {
+public class AnimalActivity extends AppCompatActivity implements AnimalListener {
 
     private TabHost.TabSpec tabSpec;
     private TextView textViewDescriprion;
     private ImageView imageView;
+    private TabHost tabHost;
     public static final String TAG_LISTENER = "tag";
 
     @Override
@@ -42,7 +44,7 @@ public class AnimalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.animal_layout_container);
 
-        TabHost tabHost = findViewById(R.id.animal_tab_host);
+        tabHost = findViewById(R.id.animal_tab_host);
         tabHost.setup();
 
         tabSpec = tabHost.newTabSpec("Cat_tag");
@@ -65,26 +67,11 @@ public class AnimalActivity extends AppCompatActivity {
             if(intent.getExtras().getString(TAG_LISTENER) != null)
             tabHost.setCurrentTabByTag(intent.getStringExtra(TAG_LISTENER));*/
         // Временное решение
-            if(getIntent().getStringExtra(AnimalActivity.TAG_LISTENER) != null)
-             setCurrentTab(getIntent().getStringExtra(AnimalActivity.TAG_LISTENER), tabHost);
+        if (getIntent().getStringExtra(AnimalActivity.TAG_LISTENER) != null)
+            setTabContent(getIntent().getStringExtra(TAG_LISTENER));
     }
 
-    private void setCurrentTab(String currentTab, TabHost tabHost) {
-        switch (currentTab) {
-            case "anastasia_tag": {
-                tabHost.setCurrentTabByTag("Cat_tag");
-            }
-            break;
-            case "viktor_tag": {
-                tabHost.setCurrentTabByTag("Dog_tag");
-            }
-            break;
-            case "marina_tag": {
-                tabHost.setCurrentTabByTag("Bird_tag");
-            }
-            break;
-        }
-    }
+
 
 
     // Custom method to get assets folder image as bitmap
@@ -120,7 +107,7 @@ public class AnimalActivity extends AppCompatActivity {
 
     TabHost.TabContentFactory tabContentFactory = new TabHost.TabContentFactory() {
         @Override
-        public View createTabContent( final String tag) {
+        public View createTabContent(final String tag) {
 
 
             View view = getLayoutInflater().inflate(R.layout.tab_animal_fragment_layout, null);
@@ -131,7 +118,6 @@ public class AnimalActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(AnimalActivity.this, OwnerActivity.class);
-
                     intent.putExtra(OwnerActivity.TAG_LISTENER, tag);
                     startActivity(intent);
                 }
@@ -164,6 +150,38 @@ public class AnimalActivity extends AppCompatActivity {
             return view;
         }
     };
+
+    @Override
+    public void showCat() {
+        tabHost.setCurrentTabByTag("Cat_tag");
+    }
+
+    @Override
+    public void showDog() {
+        tabHost.setCurrentTabByTag("Dog_tag");
+    }
+
+    @Override
+    public void showBird() {
+        tabHost.setCurrentTabByTag("Bird_tag");
+    }
+
+    public void setTabContent(String tabContent) {
+        switch (tabContent) {
+            case "anastasia_tag": {
+                showCat();
+                break;
+            }
+            case "viktor_tag": {
+                showDog();
+                break;
+            }
+            case "marina_tag": {
+                showBird();
+                break;
+            }
+        }
+    }
 }
 
 
