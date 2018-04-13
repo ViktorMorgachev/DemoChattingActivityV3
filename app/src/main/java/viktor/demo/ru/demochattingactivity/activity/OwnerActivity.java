@@ -1,21 +1,26 @@
 package viktor.demo.ru.demochattingactivity.activity;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TabHost;
-import android.widget.TextView;
-
-import java.io.IOException;
-import java.io.InputStream;
+import android.widget.Toast;
 
 import viktor.demo.ru.demochattingactivity.R;
+import viktor.demo.ru.demochattingactivity.fragments.FragmentBird;
+import viktor.demo.ru.demochattingactivity.fragments.FragmentCat;
+import viktor.demo.ru.demochattingactivity.fragments.FragmentDog;
+import viktor.demo.ru.demochattingactivity.fragments.FragmentOwnerBird;
+import viktor.demo.ru.demochattingactivity.fragments.FragmentOwnerCat;
+import viktor.demo.ru.demochattingactivity.fragments.FragmentOwnerDog;
+import viktor.demo.ru.demochattingactivity.interactors.AnimalInteractor;
+import viktor.demo.ru.demochattingactivity.interactors.OwnerInteractor;
+import viktor.demo.ru.demochattingactivity.interactors.StaticFieldInteractor;
 import viktor.demo.ru.demochattingactivity.interfaces.OwnerListener;
 
 /**
@@ -24,58 +29,64 @@ import viktor.demo.ru.demochattingactivity.interfaces.OwnerListener;
 
 public class OwnerActivity extends AppCompatActivity implements OwnerListener {
 
-    private TabHost.TabSpec tabSpec;
-    private TextView textViewDescriprion;
-    private ImageView imageView;
-    private TabHost tabHost;
-    public static final String TAG_LISTENER = "tag";
+    private ViewPager mViewPager;
+    private SectionsPagerAdapter sectionsPagerAdapter;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.owner_layout_container);
+        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        tabHost = findViewById(R.id.owner_tab_host);
-        tabHost.setup();
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(sectionsPagerAdapter);
 
-        tabSpec = tabHost.newTabSpec("anastasia_tag");
-        tabSpec.setIndicator("Настя");
-        tabSpec.setContent(tabContentFactory);
-        tabHost.addTab(tabSpec);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
-        tabSpec = tabHost.newTabSpec("marina_tag");
-        tabSpec.setIndicator("Марина");
-        tabSpec.setContent(tabContentFactory);
-        tabHost.addTab(tabSpec);
+        // Я так понял связываем их
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-        tabSpec = tabHost.newTabSpec("viktor_tag");
-        tabSpec.setIndicator("Виктор");
-        tabSpec.setContent(tabContentFactory);
-        tabHost.addTab(tabSpec);
 
-        setTabContent(getIntent().getStringExtra(TAG_LISTENER));
+        mViewPager.setCurrentItem(getIntent()
+                .getIntExtra(StaticFieldInteractor.StaticField.OWNER, OwnerInteractor.OwnerField.ANASTASIA));
 
 
     }
 
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    // Custom method to get assets folder image as bitmap
-    private Bitmap getBitmapFromAssets(String fileName) {
-
-        AssetManager am = getAssets();
-        InputStream is = null;
-        try {
-            is = am.open(fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
-        Bitmap bitmap = BitmapFactory.decodeStream(is);
-        return bitmap;
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            //return Main2Activity.PlaceholderFragment.newInstance(position + 1);
+            switch (position) {
+                case OwnerInteractor.OwnerField.ANASTASIA: {
+                    return new FragmentOwnerCat();
+                }
+                case OwnerInteractor.OwnerField.VIKTOR: {
+                    return new FragmentOwnerDog();
+                }
+                case OwnerInteractor.OwnerField.MARINA: {
+                    return new FragmentOwnerBird();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 3;
+        }
     }
-
-
 
 
 /*
@@ -91,78 +102,26 @@ public class OwnerActivity extends AppCompatActivity implements OwnerListener {
         SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
         viewPagerTab.setViewPager(viewPager);*/
 
-    TabHost.TabContentFactory tabContentFactory = new TabHost.TabContentFactory() {
-        @Override
-        public View createTabContent(final String tag) {
-
-
-            View view = getLayoutInflater().inflate(R.layout.tab_owner_fragment_layout, null);
-
-            textViewDescriprion = (TextView) view.findViewById(R.id.text_animal);
-            imageView = (ImageView) view.findViewById(R.id.image_animal);
-            View.OnClickListener onClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(OwnerActivity.this, AnimalActivity.class);
-                    intent.putExtra(OwnerActivity.TAG_LISTENER, tag);
-                    startActivity(intent);
-                }
-            };
-            imageView.setOnClickListener(onClickListener);
-
-            switch (tag) {
-                case "anastasia_tag": {
-                    textViewDescriprion.setText(R.string.anastasia_description);
-                    imageView.setImageBitmap(getBitmapFromAssets("anastasia.png"));
-                }
-                break;
-                case "marina_tag": {
-                    textViewDescriprion.setText(R.string.marina_description);
-                    imageView.setImageBitmap(getBitmapFromAssets("kamila.png"));
-                }
-                break;
-                case "viktor_tag": {
-                    textViewDescriprion.setText(R.string.viktor_description);
-                    imageView.setImageBitmap(getBitmapFromAssets("viktor.png"));
-                }
-                break;
-
-            }
-
-            return view;
-        }
-    };
-
 
     @Override
-    public void showCatOwner() {
-        tabHost.setCurrentTabByTag("anastasia_tag");
+    public void showCat() {
+        Intent intent = new Intent(this, AnimalActivity.class);
+        intent.putExtra(StaticFieldInteractor.StaticField.ANIMAL, AnimalInteractor.AnimalField.Cat);
+        startActivity(intent);
     }
 
     @Override
-    public void showDogOwner() {
-        tabHost.setCurrentTabByTag("viktor_tag");
+    public void showDog() {
+        Intent intent = new Intent(this, AnimalActivity.class);
+        intent.putExtra(StaticFieldInteractor.StaticField.ANIMAL, AnimalInteractor.AnimalField.Dog);
+        startActivity(intent);
     }
 
     @Override
-    public void showBirdOwner() {
-        tabHost.setCurrentTabByTag("marina_tag");
+    public void showBird() {
+        Intent intent = new Intent(this, AnimalActivity.class);
+        intent.putExtra(StaticFieldInteractor.StaticField.ANIMAL, AnimalInteractor.AnimalField.Bird);
+        startActivity(intent);
     }
 
-    public void setTabContent(String tabContent) {
-        switch (tabContent) {
-            case "Cat_tag": {
-                showCatOwner();
-                break;
-            }
-            case "Dog_tag": {
-                showDogOwner();
-                break;
-            }
-            case "Bird_tag": {
-                showBirdOwner();
-                break;
-            }
-        }
-    }
 }

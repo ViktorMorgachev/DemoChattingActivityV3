@@ -3,9 +3,9 @@
     <string name="cat">Кошка</string>
     <string name="dog">Собака</string>
     <string name="bird">Птица</string>
-    <string name="Kamila">Марина</string>
+    <string name="Marina">Марина</string>
     <string name="Viktor">Виктор</string>
-    <string name="Katrine">Анастасия</string>
+    <string name="Anastasia">Анастасия</string>
     <string name="Owners">Хозяева</string>
     <string name="anastasia_description">Имя: Анастасия \n
         Возраст: 17 лет\n
@@ -14,24 +14,29 @@
         Характер: Сангвиник</string>
     <string name="marina_description">Имя: Марина \n
         Возраст: 19 лет\n
-        Хорошо играет на гитаре и любит путеществовать,\n с ней можно но тяжело мутить, очень сложный характер \n
+        Хорошо играет на гитаре и любит путеществовать,\nс ней можно но тяжело мутить, сложный характер\n
         Учится на юриста \n
         Характер: Холерик</string>
-    <string name="viktor_description">Имя: Виктор \n
+    <string name="viktor_description">Имя: Виктор\n
         Возраст: 21 год\n
-        Любит бегать, стороне развит, много всего хочет знать \n часто \"распыляется\", \n любит создавать программы \n
+        Любит бегать, стороне развит, много всего хочет знать \n часто \"распыляется\", \n любит создавать программы\n
         Характер: Флегматик</string>
     <string name="cat_description">Имя: Барсик \n
         Возраст: 4 года, рыжего цвета\n
-        Был найдён возле заброшенного дома, \n и спасён от собаки, \n
+        Был найдён возле заброшенного дома, \n и спасён от собаки,\n
         Хозяин: Анастасия</string>
     <string name="bird_description">Имя: Кеша \n
         Возраст: 2 года \n
         Купили у старичка, \n
-        Хозяин: Анастасия</string>
+        Хозяин: Марина</string>
     <string name="dog_description">Имя: Боня \n
         Возраст: 3 года \n
         Щенком был подпрошен кем-то, \n
         Хозяин: Виктор</string>
     <string name="action_settings">настройки</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
